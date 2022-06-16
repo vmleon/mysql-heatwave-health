@@ -65,6 +65,16 @@ Apply the infrastructure, based on the plan from the previous step:
 terraform apply -auto-approve
 ```
 
+Print MySQL password:
+```
+terraform output mysql_admin_password
+```
+
+Install MySQL Shell and dataset CSV files on the client:
+```
+ansible-playbook -i ./generated/client.ini ../ansible/client.yaml
+```
+
 ## Import Dataset
 
 XXX

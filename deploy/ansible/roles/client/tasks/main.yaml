@@ -1,0 +1,17 @@
+---
+- name: Extract fitbit.zip into /home/opc
+  unarchive:
+    src: fitbit.zip
+    dest: /home/opc
+- name: Copy Mysql config files
+  copy:
+    src: "../../../../terraform/generated/{{ item }}"
+    dest: /home/opc
+    owner: opc
+    group: opc
+  with_items:
+    - ".my.cnf"
+- name: Install MySQL Shell
+  dnf:
+    name: mysql-shell
+    update_cache: yes
