@@ -14,12 +14,14 @@ XXX
 
 ## TODO
 
-- Deploy Network
-- Deploy MySQL
-- Deploy HeatWave
 - Import csv
+- Deploy HeatWave
 - Run Query without Heatwave
 - Run Query with Heatwave
+- Backend
+- Backend HeatWave on/off
+- Frontend
+- Load Balancer
 
 ## Set Up
 
