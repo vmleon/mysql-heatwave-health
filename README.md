@@ -85,7 +85,21 @@ ansible-playbook -i ./generated/client.ini ../ansible/client.yaml
 
 ## Import Dataset
 
-XXX
+```
+cat .my.cnf
+```
+
+```
+mysqlsh --user=USER --host=HOST
+```
+
+```
+mysqlsh --file schema.js
+```
+
+```
+\exit
+```
 
 ## Benchmark HeatWave
 

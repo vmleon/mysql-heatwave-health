@@ -3,6 +3,8 @@
   unarchive:
     src: fitbit.zip
     dest: /home/opc
+    owner: opc
+    group: opc
 - name: Copy Mysql config files
   copy:
     src: "../../../../terraform/generated/{{ item }}"
@@ -11,6 +13,7 @@
     group: opc
   with_items:
     - ".my.cnf"
+    - "schema.js"
 - name: Install MySQL Shell
   dnf:
     name: mysql-shell
