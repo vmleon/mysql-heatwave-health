@@ -2,11 +2,17 @@
 
 This workshop is a hands-on experience to test the performance advantages and cost savings you can benefit from by using MySQL HeatWave.
 
+You are going to run queries on a dataset of a fitness tracker. Run them with MySQL Innodb engine and then with HeatWave to speed up your analytical and ML queries.
+
 XXX ARCHITECTURE DIAGRAM HERE
 
 ## HeatWave Introduction
 
-XXX
+HeatWave—In-Memory Query Accelerator with Built-in ML.
+
+![HeatWave](images/heatwave.png)
+
+Increases MySQL performance by orders of magnitude for analytics and mixed workloads. Eliminates the need for a separate analytics database, separate machine learning (ML) tools, and extract, transform, and load (ETL) processes.
 
 ## Requirements
 
