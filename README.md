@@ -23,10 +23,14 @@ Increases MySQL performance by orders of magnitude for analytics and mixed workl
 - Lab 7: Data Science get started
 - Lab 8: Clean up
 
+Website Mock-up:
+![Website](images/website.png)
+
 ## Nice to have
 
 - Performance competition
 - Story on the data science (enhance dataset)
+- Olympics dataset as alternative
 
 ## Requirements
 
