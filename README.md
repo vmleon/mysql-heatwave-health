@@ -4,8 +4,6 @@ This workshop is a hands-on experience to test the performance advantages and co
 
 You are going to run queries on a dataset of a fitness tracker. Run them with MySQL Innodb engine and then with HeatWave to speed up your analytical and ML queries.
 
-XXX ARCHITECTURE DIAGRAM HERE
-
 ## HeatWave Introduction
 
 HeatWave—In-Memory Query Accelerator with Built-in ML.
@@ -14,9 +12,20 @@ HeatWave—In-Memory Query Accelerator with Built-in ML.
 
 Increases MySQL performance by orders of magnitude for analytics and mixed workloads. Eliminates the need for a separate analytics database, separate machine learning (ML) tools, and extract, transform, and load (ETL) processes.
 
+## Workshop
+
+- Lab 1: Introduction 
+- Lab 2: Getting Started (Trial)
+- Lab 3: UI deployment of MySQL and Heatwave
+- Lab 4: Load fitness dataset
+- Lab 5: Web deployment (Resource Manager)
+- Lab 6: Expore benchmarking
+- Lab 7: Data Science get started
+- Lab 8: Clean up
+
 ## Requirements
 
-- Active Oracle Cloud Account
+- Active Oracle Cloud Account (with credits)
 
 ## TODO
 
@@ -24,10 +33,10 @@ Increases MySQL performance by orders of magnitude for analytics and mixed workl
 - Deploy HeatWave
 - Run Query without Heatwave
 - Run Query with Heatwave
-- Backend
-- Backend HeatWave on/off
 - Frontend
-- Load Balancer
+- Frontend Deployment
+- Backend HeatWave on/off
+- Backend Deployment
 
 ## Set Up
 
