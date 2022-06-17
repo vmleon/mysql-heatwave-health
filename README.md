@@ -23,6 +23,11 @@ Increases MySQL performance by orders of magnitude for analytics and mixed workl
 - Lab 7: Data Science get started
 - Lab 8: Clean up
 
+## Nice to have
+
+- Performance competition
+- Story on the data science (enhance dataset)
+
 ## Requirements
 
 - Active Oracle Cloud Account (with credits)
@@ -37,6 +42,7 @@ Increases MySQL performance by orders of magnitude for analytics and mixed workl
 - Frontend Deployment
 - Backend HeatWave on/off
 - Backend Deployment
+
 
 ## Set Up
 
