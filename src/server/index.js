@@ -28,28 +28,37 @@ app.get('/api/v1/', async (req, res, next) => {
 });
 
 app.post('/api/v1/perf', async (req, res) => {
-  const query = req.body.query || '';
-  const params = req.params;
-  logger.debug(params);
+  const query = req.body.query;
+  // const params = req.params;
   if (!validQuery(query)) {
     res.status(400).json({status: 400, message: 'Invalid query'});
   }
   try {
-    const startTime = process.hrtime();
-    const results = await db.query(query);
-    const elapsedTime = process.hrtime(startTime);
-    res.json({message: results[0].solution, elapsedTime});
+    const results = await run(query, 10);
+    const benchmark = results.map((t) => (t[0] * 1000000000 + t[1]) / 1000000000);
+    res.json(benchmark);
   } catch (error) {
     logger.error(`Error while getting ${query} from MySQL: ${error.message}`);
     next(error);
   }
 });
 
+async function run(query, num) {
+  const vector = new Array(num).fill();
+  for (let index = 0; index < vector.length; index++) {
+    const element = vector[index];
+    const startTime = process.hrtime();
+    await db.query(query);
+    vector[index] = process.hrtime(startTime);
+  }
+  return vector;
+}
+
 function validQuery(query) {
-  if (!query.length()) {
+  if (!query) {
     return false;
   }
-  if (!query.startWith('SELECT ')) {
+  if (!query.startsWith('SELECT ')) {
     return false;
   }
   return true;

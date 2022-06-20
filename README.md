@@ -65,6 +65,18 @@ Export an environment variable with the base directory:
 export BASE_DIR=$(pwd)
 ```
 
+## Build 
+
+Change directory to the ``:
+```
+cd $BASE_DIR/src/web
+```
+
+Run the web build:
+```
+npm run build
+```
+
 ## Deployment
 
 Change directory to `deploy/terraform`:

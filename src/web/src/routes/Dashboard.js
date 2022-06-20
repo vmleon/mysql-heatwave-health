@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Container from '@mui/material/Container';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -25,6 +25,21 @@ const dataHeatwave = [
 
 function Dashboard() {
   const [engine, setEngine] = useState('mysql');
+  const [text, setText] = useState('SELECT 1 + 1 AS solution;');
+  const [data, setData] = useState([]);
+
+  const sendQuery = async (query) => {
+    const results = await (
+      await fetch('/api/v1/perf', {
+        method: 'POST',
+        body: JSON.stringify({query: text}),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+    ).json();
+    setData(results.map((t, idx) => ({name: `Test ${idx + 1}`, responseTime: t})));
+  };
 
   const handleChange = (event, newEngine) => {
     setEngine(newEngine);
@@ -55,12 +70,13 @@ function Dashboard() {
           Query:
         </Typography>
         <TextareaAutosize
-          aria-label="minimum height"
+          onChange={({target}) => setText(target.value)}
+          aria-label="query"
           minRows={3}
-          placeholder="Minimum 3 rows"
-          value="SELECT * FROM TABLE;"
+          placeholder="Query"
+          value={text}
         />
-        <Button variant="contained" endIcon={<SendIcon />}>
+        <Button variant="contained" endIcon={<SendIcon />} onClick={sendQuery}>
           Send
         </Button>
       </Stack>
@@ -72,11 +88,11 @@ function Dashboard() {
       >
         <VictoryChart domainPadding={20} theme={VictoryTheme.material}>
           <VictoryAxis
-            tickValues={[1, 2, 3, 4]}
-            tickFormat={['Test 1', 'Test 2', 'Test 3', 'Test 4']}
+            tickValues={data.map((d, idx) => idx + 1)}
+            tickFormat={data.map((d) => d.name)}
           ></VictoryAxis>
-          <VictoryAxis dependentAxis tickFormat={(x) => `${x / 1000}s`}></VictoryAxis>
-          <VictoryBar data={dataMysql} x="testNumber" y="responseTime" />
+          <VictoryAxis dependentAxis tickFormat={(x) => `${x}ms`}></VictoryAxis>
+          <VictoryBar data={data} x="name" y="responseTime" />
         </VictoryChart>
         <Typography align="center">Innodb Engine vs Heatwave Response times</Typography>
       </Box>
