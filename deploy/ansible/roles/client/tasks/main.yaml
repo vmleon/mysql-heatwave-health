@@ -5,6 +5,28 @@
     dest: /home/opc
     owner: opc
     group: opc
+- name: Install MySQL Shell, NGINX and Node
+  dnf:
+    name:
+      - mysql-shell
+      - nginx
+      - "@nodejs:16"
+    update_cache: yes
+- name: Enable nginx
+  service:
+    name: nginx.service
+    state: started
+    enabled: yes
+- name: Copy NGINX config file
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+  notify: restart nginx
+- name: Copy web static files
+  copy:
+    src: ../../../../../src/web/build/
+    dest: /usr/share/nginx/html/
+  notify: restart nginx
 - name: Copy Mysql config files
   copy:
     src: "../../../../terraform/generated/{{ item }}"
@@ -12,9 +34,55 @@
     owner: opc
     group: opc
   with_items:
-    - ".my.cnf"
-    - "schema.js"
-- name: Install MySQL Shell
-  dnf:
-    name: mysql-shell
-    update_cache: yes
+    - "mysql_password.txt"
+    - "mysql_user.txt"
+    - "mysql_host.txt"
+- name: Copy server files
+  copy:
+    src: "../../../../../src/server/{{ item }}"
+    dest: /home/opc/server/
+    owner: opc
+  with_items:
+  - "index.js"
+  - "db.js"
+  - "package.json"
+  - "package-lock.json"
+- name: Copy schema.js script
+  copy:
+    src: schema.js
+    dest: /home/opc
+    owner: opc
+- name: Create fitbit schema
+  command: mysqlsh --host {{ mysql_host }} -u{{ mysql_user }}  -p{{mysql_password}} --file schema.js
+  become: true
+  become_user: opc
+  args:
+    chdir: /home/opc
+- name: Copy env file
+  template:
+    src: ../files/env.j2
+    dest: /home/opc/server/.env
+    owner: opc
+    group: opc
+    mode: 0744
+- name: Install dependencies
+  command: npm install
+  become: true
+  become_user: opc
+  args:
+    chdir: /home/opc/server/
+- name: Install pm2
+  command: npm install pm2 -g
+- name: Run Server App
+  command: pm2 -f start index.js
+  become: true
+  become_user: opc
+  args:
+    chdir: /home/opc/server/
+- name: Add firewall ports
+  firewalld:
+    zone: public
+    service: http
+    permanent: yes
+    immediate: yes
+    state: enabled

@@ -109,7 +109,10 @@ cat .my.cnf
 ```
 
 ```
-mysqlsh --user=USER --host=HOST
+mysqlsh \
+  --user=`cat mysql_user.txt` \
+  --host=`cat mysql_host.txt` \
+  --password=`cat mysql_password.txt`
 ```
 
 ```
@@ -117,7 +120,7 @@ mysqlsh --file schema.js
 ```
 
 ```
-\exit
+\q
 ```
 
 ## Benchmark HeatWave
