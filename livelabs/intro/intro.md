@@ -33,6 +33,6 @@ In this workshop, you will learn how to:
 Your account is ready? let's start learning!
 
 ## Acknowledgements
-- **Author** - Rawan Aboukoura - Technology Product Strategy Manager, Vittorio Cioe - MySQL Solution Engineer
-- **Contributors** - Priscila Iruela - Technology Product Strategy Director, Victor Martin - Technology Product Strategy Manager 
-- **Last Updated By/Date** - Anoosha Pilli, September 2021
+  - **Author** - Victor Martin - Technology Product Strategy Director, Priscila Iruela - Technology Product Strategy Director
+  - **Contributors** - XXX
+  - **Last Updated By/Date** - XXX
