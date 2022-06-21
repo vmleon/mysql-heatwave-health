@@ -9,9 +9,23 @@
   dnf:
     name:
       - mysql-shell
+      - mysql
       - nginx
       - "@nodejs:16"
     update_cache: yes
+# sudo semanage port --add --type http_port_t --proto tcp 3000
+#
+# sudo cat /var/log/audit/audit.log | grep nginx | grep denied | audit2allow -M mynginx
+# sudo semodule -i mynginx.pp
+#s
+# - name: SELinux Module mynginx.pp
+#   command: semodule -i mynginx.pp
+#   become: true
+# - name: Set httpd_can_network_relay flag on
+#   seboolean:
+#     name: httpd_can_network_relay
+#     state: yes
+#     persistent: yes
 - name: Enable nginx
   service:
     name: nginx.service
@@ -47,13 +61,22 @@
   - "db.js"
   - "package.json"
   - "package-lock.json"
-- name: Copy schema.js script
+- name: Copy schema.sql and load.js script
   copy:
-    src: schema.js
+    src: "../files/{{ item }}"
     dest: /home/opc
     owner: opc
+  with_items:
+  - "schema.sql"
+  - "load.js"
 - name: Create fitbit schema
-  command: mysqlsh --host {{ mysql_host }} -u{{ mysql_user }}  -p{{mysql_password}} --file schema.js
+  command: mysqlsh --mysql --host={{ mysql_host }} --user={{ mysql_user }}  --password={{mysql_password}} --file schema.sql
+  become: true
+  become_user: opc
+  args:
+    chdir: /home/opc
+- name: Load fitbit data
+  command: mysqlsh --mysql --host={{ mysql_host }} --user={{ mysql_user }}  --password={{mysql_password}} --file load.js
   become: true
   become_user: opc
   args:
@@ -74,7 +97,7 @@
 - name: Install pm2
   command: npm install pm2 -g
 - name: Run Server App
-  command: pm2 -f start index.js
+  command: pm2 --node-args="--max-old-space-size=512" -f start index.js
   become: true
   become_user: opc
   args:

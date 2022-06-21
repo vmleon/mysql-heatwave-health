@@ -17,17 +17,17 @@ app.use(express.json());
 app.use(compression());
 
 app.get('/api/v1/', async (req, res, next) => {
-  const query = 'SELECT 1 + 1 AS solution';
+  const query = 'SELECT 1';
   try {
     const results = await db.query(query);
-    res.json({message: results[0].solution});
+    res.json({message: results[0]});
   } catch (error) {
-    logger.error(`Error while getting ${query} from MySQL: ${error.message}`);
+    logger.error(`Error while getting "${query}" from MySQL: ${error.message}`);
     next(error);
   }
 });
 
-app.post('/api/v1/perf', async (req, res) => {
+app.post('/api/v1/perf', async (req, res, next) => {
   const query = req.body.query;
   // const params = req.params;
   if (!validQuery(query)) {
@@ -38,19 +38,21 @@ app.post('/api/v1/perf', async (req, res) => {
     const benchmark = results.map((t) => (t[0] * 1000000000 + t[1]) / 1000000000);
     res.json(benchmark);
   } catch (error) {
-    logger.error(`Error while getting ${query} from MySQL: ${error.message}`);
+    logger.error(`Error while getting "${query}" from MySQL: ${error.message}`);
     next(error);
   }
 });
 
 async function run(query, num) {
+  const connection = await db.getConnection();
   const vector = new Array(num).fill();
   for (let index = 0; index < vector.length; index++) {
     const element = vector[index];
     const startTime = process.hrtime();
-    await db.query(query);
+    await db.query(connection, query);
     vector[index] = process.hrtime(startTime);
   }
+  connection.close();
   return vector;
 }
 

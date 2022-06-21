@@ -29,9 +29,27 @@ resource "oci_core_subnet" "publicsubnet" {
   display_name      = "Public Subnet"
   dns_label         = "public"
   prohibit_public_ip_on_vnic = false
-  security_list_ids = [oci_core_virtual_network.workshopvcn.default_security_list_id]
+  security_list_ids = [oci_core_virtual_network.workshopvcn.default_security_list_id, oci_core_security_list.http_security_list.id]
   route_table_id    = oci_core_virtual_network.workshopvcn.default_route_table_id
   dhcp_options_id   = oci_core_virtual_network.workshopvcn.default_dhcp_options_id
+}
+
+resource "oci_core_security_list" "http_security_list" {
+  compartment_id = var.compartment_ocid
+  vcn_id         = oci_core_virtual_network.workshopvcn.id
+  display_name   = "HTTP Security List"
+
+  ingress_security_rules {
+    protocol  = "6" // tcp
+    source    = "0.0.0.0/0"
+    stateless = false
+
+    tcp_options {
+      min = 80
+      max = 80
+    }
+  }
+
 }
 
 resource "oci_core_subnet" "privatesubnet" {

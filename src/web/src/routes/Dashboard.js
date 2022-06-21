@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
+import Alert from '@mui/material/Alert';
 import {VictoryBar, VictoryChart, VictoryAxis, VictoryTheme} from 'victory';
 
 const dataMysql = [
@@ -24,33 +25,31 @@ const dataHeatwave = [
 ];
 
 function Dashboard() {
-  const [engine, setEngine] = useState('mysql');
-  const [text, setText] = useState('SELECT 1 + 1 AS solution;');
+  const [text, setText] = useState('SELECT * FROM heartrate_seconds;');
   const [data, setData] = useState([]);
+  const [error, setError] = useState('');
 
   const sendQuery = async (query) => {
-    const results = await (
-      await fetch('/api/v1/perf', {
-        method: 'POST',
-        body: JSON.stringify({query: text}),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-    ).json();
-    setData(results.map((t, idx) => ({name: `Test ${idx + 1}`, responseTime: t})));
-  };
-
-  const handleChange = (event, newEngine) => {
-    setEngine(newEngine);
+    try {
+      const results = await (
+        await fetch('/api/v1/perf', {
+          method: 'POST',
+          body: JSON.stringify({query: text}),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+      ).json();
+      setData(results.map((t, idx) => ({name: `${idx + 1}`, responseTime: t})));
+      setError('');
+    } catch (error) {
+      setError(`Error running query: ${error.message}`);
+      setData([]);
+    }
   };
 
   return (
     <Container maxWidth="sm" style={{padding: '1rem'}}>
-      <ToggleButtonGroup color="primary" value={engine} exclusive onChange={handleChange}>
-        <ToggleButton value="mysql">MySQL</ToggleButton>
-        <ToggleButton value="heatwave">Heatwave</ToggleButton>
-      </ToggleButtonGroup>
       <Stack direction="column" spacing={1}>
         <Typography
           variant="h6"
@@ -76,6 +75,7 @@ function Dashboard() {
           placeholder="Query"
           value={text}
         />
+        {error && <Alert severity="error">{error}</Alert>}
         <Button variant="contained" endIcon={<SendIcon />} onClick={sendQuery}>
           Send
         </Button>

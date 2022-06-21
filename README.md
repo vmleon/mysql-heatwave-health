@@ -122,9 +122,11 @@ cat .my.cnf
 
 ```
 mysqlsh \
+  --mx \
   --user=`cat mysql_user.txt` \
   --host=`cat mysql_host.txt` \
-  --password=`cat mysql_password.txt`
+  --password=`cat mysql_password.txt` \
+  --schema=fitbit
 ```
 
 ```

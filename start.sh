@@ -34,3 +34,5 @@ ansible-playbook -i ./generated/client.ini ../ansible/client.yaml \
 banner "Output"
 
 terraform output
+
+cd $BASE_DIR
