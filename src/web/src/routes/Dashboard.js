@@ -25,7 +25,7 @@ const dataHeatwave = [
 ];
 
 function Dashboard() {
-  const [text, setText] = useState('SELECT * FROM heartrate_seconds;');
+  const [text, setText] = useState('SELECT * FROM calories;');
   const [data, setData] = useState([]);
   const [error, setError] = useState('');
 
@@ -91,10 +91,10 @@ function Dashboard() {
             tickValues={data.map((d, idx) => idx + 1)}
             tickFormat={data.map((d) => d.name)}
           ></VictoryAxis>
-          <VictoryAxis dependentAxis tickFormat={(x) => `${x}ms`}></VictoryAxis>
+          <VictoryAxis dependentAxis tickFormat={(y) => `${y}ms`}></VictoryAxis>
           <VictoryBar data={data} x="name" y="responseTime" />
         </VictoryChart>
-        <Typography align="center">Innodb Engine vs Heatwave Response times</Typography>
+        <Typography align="center">Innodb Engine (response time)</Typography>
       </Box>
     </Container>
   );

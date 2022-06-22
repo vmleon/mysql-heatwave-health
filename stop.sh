@@ -1,5 +1,6 @@
 #!/bin/bash
 
+start_time=$(date +%s)
 
 banner()
 {
@@ -15,8 +16,10 @@ then
   export BASE_DIR=$(pwd)
 fi
 
-cd $BASE_DIR/deploy/terraform
-
 banner "Terraform Destroy"
-
+cd $BASE_DIR/deploy/terraform
 terraform destroy -auto-approve
+
+end_time=$(date +%s)
+elapsed=$(( end_time - start_time ))
+echo "Time: $elapsed sec"

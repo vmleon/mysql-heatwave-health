@@ -26,8 +26,8 @@ resource "random_password" "mysql_admin_password" {
   length           = 16
   special          = true
   min_numeric = 3
-  min_special = 3
-  min_lower = 3
-  min_upper = 3
-  override_special = "()-_[]{}?"
+  min_special = 2
+  min_lower = 2
+  min_upper = 2
+  override_special = "@#$^&?-_()[]"
 }

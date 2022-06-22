@@ -14,8 +14,7 @@ async function getConnection() {
 }
 
 async function query(connection, sql, params) {
-  const [results] = await connection.execute(sql, params);
-  return results;
+  await connection.execute(sql, params);
 }
 
 module.exports = {

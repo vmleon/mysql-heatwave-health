@@ -44,15 +44,14 @@ app.post('/api/v1/perf', async (req, res, next) => {
 });
 
 async function run(query, num) {
-  const connection = await db.getConnection();
   const vector = new Array(num).fill();
   for (let index = 0; index < vector.length; index++) {
-    const element = vector[index];
+    const connection = await db.getConnection();
     const startTime = process.hrtime();
     await db.query(connection, query);
     vector[index] = process.hrtime(startTime);
+    connection.close();
   }
-  connection.close();
   return vector;
 }
 

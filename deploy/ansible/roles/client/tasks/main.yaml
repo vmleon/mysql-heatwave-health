@@ -13,19 +13,11 @@
       - nginx
       - "@nodejs:16"
     update_cache: yes
-# sudo semanage port --add --type http_port_t --proto tcp 3000
-#
-# sudo cat /var/log/audit/audit.log | grep nginx | grep denied | audit2allow -M mynginx
-# sudo semodule -i mynginx.pp
-#s
-# - name: SELinux Module mynginx.pp
-#   command: semodule -i mynginx.pp
-#   become: true
-# - name: Set httpd_can_network_relay flag on
-#   seboolean:
-#     name: httpd_can_network_relay
-#     state: yes
-#     persistent: yes
+- name: Set httpd_can_network_connect flag on
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
 - name: Enable nginx
   service:
     name: nginx.service
