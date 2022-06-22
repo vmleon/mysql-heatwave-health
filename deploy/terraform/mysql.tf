@@ -1,5 +1,5 @@
 resource "oci_mysql_mysql_db_system" "mysql_db_system" {
-    availability_domain = "${data.template_file.ad_names.*.rendered[0]}"
+    availability_domain = "${lookup(data.oci_identity_availability_domains.ads.availability_domains[0], "name")}"
     compartment_id = var.compartment_ocid
     // TODO get from data.oci_mysql_shapes
     // https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/mysql_shapes
