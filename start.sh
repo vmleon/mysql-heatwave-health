@@ -18,6 +18,7 @@ fi
 
 banner "Build web"
 cd $BASE_DIR/src/web
+npm install
 npm run build
 
 banner "Terraform Init"
