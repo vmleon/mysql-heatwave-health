@@ -54,3 +54,20 @@ util.importTable('/home/opc/fitbit/dailyActivity_merged.csv', {
   skipRows: 1,
   showProgress: true,
 });
+
+// sleepDay_merged
+util.importTable('/home/opc/fitbit/sleepDay_merged.csv', {
+  schema: 'fitbit',
+  table: 'sleep_day',
+  columns: [1, 2, 3, 4, 5],
+  decodeColumns: {
+    id: '@1',
+    date: 'STR_TO_DATE(@2,"%m/%d/%Y %h:%i:%s %p")',
+    total_sleep_record: '@3',
+    total_minutes_asleep: '@4',
+    total_time_inbed: '@5',
+  },
+  dialect: 'csv-unix',
+  skipRows: 1,
+  showProgress: true,
+});

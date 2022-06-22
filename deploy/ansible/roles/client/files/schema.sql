@@ -28,3 +28,13 @@ CREATE TABLE daily_activities (
   sedentary_minutes INT,
   calories INT
 );
+--
+-- sleepDay_merged
+DROP TABLE IF EXISTS sleep_day;
+CREATE TABLE sleep_day (
+  id VARCHAR(20),
+  date DATE,
+  total_sleep_record INT,
+  total_minutes_asleep INT, 
+  total_time_inbed INT
+);
