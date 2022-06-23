@@ -16,6 +16,14 @@ resource "oci_mysql_mysql_db_system" "mysql_db_system" {
     is_highly_available = false
 }
 
+resource "oci_mysql_heat_wave_cluster" "mysql_heat_wave_cluster" {
+    #Required
+    db_system_id = oci_database_db_system.mysql_db_system.id
+    cluster_size = 1
+    // TODO get from data.oci_mysql_shapes
+    shape_name = "MySQL.HeatWave.VM.Standard.E3"
+}
+
 
 resource "random_string" "mysql_user" {
   length           = 6
