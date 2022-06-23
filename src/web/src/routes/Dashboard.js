@@ -1,50 +1,44 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Container from '@mui/material/Container';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
-import {VictoryBar, VictoryChart, VictoryAxis, VictoryTheme} from 'victory';
-
-const dataMysql = [
-  {testNumber: 1, responseTime: 13000},
-  {testNumber: 2, responseTime: 16500},
-  {testNumber: 3, responseTime: 14250},
-  {testNumber: 4, responseTime: 19000},
-];
-const dataHeatwave = [
-  {testNumber: 1, responseTime: 1200},
-  {testNumber: 2, responseTime: 1350},
-  {testNumber: 3, responseTime: 1475},
-  {testNumber: 4, responseTime: 1800},
-];
+import Chart from '../components/Chart';
 
 function Dashboard() {
-  const [text, setText] = useState('SELECT * FROM calories;');
+  const [query, setQuery] = useState('SELECT * FROM calories;');
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState('');
 
-  const sendQuery = async (query) => {
+  const sendQuery = async () => {
     try {
+      setLoading(true);
       const results = await (
         await fetch('/api/v1/perf', {
           method: 'POST',
-          body: JSON.stringify({query: text}),
+          body: JSON.stringify({query: query}),
           headers: {
             'Content-Type': 'application/json',
           },
         })
       ).json();
-      setData(results.map((t, idx) => ({name: `${idx + 1}`, responseTime: t})));
-      setError('');
+      if (results.error) {
+        setData([]);
+        setError(results.message);
+      } else {
+        setData(results.map((t, idx) => ({name: `${idx + 1}`, responseTime: t})));
+        setError('');
+      }
     } catch (error) {
       setError(`Error running query: ${error.message}`);
       setData([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,33 +63,23 @@ function Dashboard() {
           Query:
         </Typography>
         <TextareaAutosize
-          onChange={({target}) => setText(target.value)}
+          onChange={({target}) => setQuery(target.value)}
           aria-label="query"
           minRows={3}
           placeholder="Query"
-          value={text}
+          value={query}
         />
         {error && <Alert severity="error">{error}</Alert>}
-        <Button variant="contained" endIcon={<SendIcon />} onClick={sendQuery}>
+        <LoadingButton
+          variant="contained"
+          loading={loading}
+          endIcon={<SendIcon />}
+          onClick={sendQuery}
+        >
           Send
-        </Button>
+        </LoadingButton>
       </Stack>
-      <Box
-        sx={{
-          width: 500,
-          height: 500,
-        }}
-      >
-        <VictoryChart domainPadding={20} theme={VictoryTheme.material}>
-          <VictoryAxis
-            tickValues={data.map((d, idx) => idx + 1)}
-            tickFormat={data.map((d) => d.name)}
-          ></VictoryAxis>
-          <VictoryAxis dependentAxis tickFormat={(y) => `${y}ms`}></VictoryAxis>
-          <VictoryBar data={data} x="name" y="responseTime" />
-        </VictoryChart>
-        <Typography align="center">Innodb Engine (response time)</Typography>
-      </Box>
+      <Chart data={data} />
     </Container>
   );
 }

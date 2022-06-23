@@ -34,12 +34,11 @@ app.post('/api/v1/perf', async (req, res, next) => {
     res.status(400).json({status: 400, message: 'Invalid query'});
   }
   try {
-    const results = await run(query, 10);
-    const benchmark = results.map((t) => (t[0] * 1000000000 + t[1]) / 1000000000);
+    const benchmark = await run(query, 10);
     res.json(benchmark);
   } catch (error) {
     logger.error(`Error while getting "${query}" from MySQL: ${error.message}`);
-    next(error);
+    res.status(400).json({error: true, message: error.message});
   }
 });
 
@@ -49,7 +48,7 @@ async function run(query, num) {
     const connection = await db.getConnection();
     const startTime = process.hrtime();
     await db.query(connection, query);
-    vector[index] = process.hrtime(startTime);
+    vector[index] = process.hrtime(startTime)[0];
     connection.close();
   }
   return vector;
