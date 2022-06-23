@@ -3,7 +3,7 @@ resource "oci_mysql_mysql_db_system" "mysql_db_system" {
     compartment_id = var.compartment_ocid
     // TODO get from data.oci_mysql_shapes
     // https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/mysql_shapes
-    shape_name = "MySQL.VM.Standard.E3.1.8GB"
+    shape_name = "MySQL.HeatWave.VM.Standard.E3"
     subnet_id = oci_core_subnet.privatesubnet.id
 
     admin_password = random_password.mysql_admin_password.result
@@ -16,13 +16,13 @@ resource "oci_mysql_mysql_db_system" "mysql_db_system" {
     is_highly_available = false
 }
 
-# resource "oci_mysql_heat_wave_cluster" "mysql_heat_wave_cluster" {
-#     #Required
-#     db_system_id = oci_mysql_mysql_db_system.mysql_db_system.id
-#     cluster_size = 1
-#     // TODO get from data.oci_mysql_shapes
-#     shape_name = "MySQL.HeatWave.VM.Standard.E3"
-# }
+resource "oci_mysql_heat_wave_cluster" "mysql_heat_wave_cluster" {
+    #Required
+    db_system_id = oci_mysql_mysql_db_system.mysql_db_system.id
+    cluster_size = 1
+    // TODO get from data.oci_mysql_shapes
+    shape_name = "MySQL.HeatWave.VM.Standard.E3"
+}
 
 
 resource "random_string" "mysql_user" {
