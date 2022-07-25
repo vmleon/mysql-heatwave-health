@@ -35,7 +35,7 @@ function Dashboard() {
         setData([]);
         setError(results.message);
       } else {
-        setData(results.map((t, idx) => ({name: `${idx + 1}`, responseTime: t})));
+        setData(results);
         setError('');
       }
     } catch (error) {
@@ -118,7 +118,7 @@ function Dashboard() {
           Send
         </LoadingButton>
       </Stack>
-      <Chart data={data} />
+      <Chart innodbData={data} rapidData={[]} />
     </Container>
   );
 }

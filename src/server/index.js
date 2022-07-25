@@ -65,7 +65,7 @@ async function run(query, num, limit) {
     const connection = await db.getConnection();
     const startTime = process.hrtime();
     await db.query(connection, sql);
-    vector[index] = process.hrtime(startTime)[0];
+    vector[index] = {number: index, responseTime: process.hrtime(startTime)[0]};
     connection.close();
   }
   return vector;

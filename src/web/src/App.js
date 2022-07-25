@@ -15,7 +15,3 @@ function App() {
 }
 
 export default App;
-
-/* <Link to="/dasboard">Dashboard</Link>
-    <Link to="/config">Config</Link>
-     */

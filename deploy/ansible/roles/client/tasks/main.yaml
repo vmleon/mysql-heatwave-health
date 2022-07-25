@@ -69,6 +69,8 @@
     chdir: /home/opc
 - name: Load fitbit data
   command: mysqlsh --mysql --host={{ mysql_host }} --user={{ mysql_user }}  --password={{mysql_password}} --file load.js
+  environment:
+    CSV_PATH: /home/opc/fitbit
   become: true
   become_user: opc
   args:

@@ -35,6 +35,6 @@ CREATE TABLE sleep_day (
   id VARCHAR(20),
   date DATE,
   total_sleep_record INT,
-  total_minutes_asleep INT, 
+  total_minutes_asleep INT,
   total_time_inbed INT
 );

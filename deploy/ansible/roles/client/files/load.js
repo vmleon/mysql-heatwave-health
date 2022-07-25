@@ -1,5 +1,7 @@
+const csv_path = os.getenv('CSV_PATH');
+
 // dailyCalories_merged
-util.importTable('/home/opc/fitbit/dailyCalories_merged.csv', {
+util.importTable(csv_path + '/dailyCalories_merged.csv', {
   schema: 'fitbit',
   table: 'calories',
   columns: [1, 2, 3],
@@ -14,7 +16,7 @@ util.importTable('/home/opc/fitbit/dailyCalories_merged.csv', {
 });
 
 // heartrate_seconds_merged
-util.importTable('/home/opc/fitbit/heartrate_seconds_merged.csv', {
+util.importTable(csv_path + '/heartrate_seconds_merged.csv', {
   schema: 'fitbit',
   table: 'heartrate_seconds',
   columns: [1, 2, 3],
@@ -29,7 +31,7 @@ util.importTable('/home/opc/fitbit/heartrate_seconds_merged.csv', {
 });
 
 // dailyActivity_merged
-util.importTable('/home/opc/fitbit/dailyActivity_merged.csv', {
+util.importTable(csv_path + '/dailyActivity_merged.csv', {
   schema: 'fitbit',
   table: 'daily_activities',
   columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -56,7 +58,7 @@ util.importTable('/home/opc/fitbit/dailyActivity_merged.csv', {
 });
 
 // sleepDay_merged
-util.importTable('/home/opc/fitbit/sleepDay_merged.csv', {
+util.importTable(csv_path + '/sleepDay_merged.csv', {
   schema: 'fitbit',
   table: 'sleep_day',
   columns: [1, 2, 3, 4, 5],
