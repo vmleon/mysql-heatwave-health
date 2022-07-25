@@ -16,10 +16,10 @@ Increases MySQL performance by orders of magnitude for analytics and mixed workl
 
 - Lab 1: Introduction 
 - Lab 2: Getting Started (Trial)
-- Lab 3: UI deployment of MySQL and Heatwave
-- Lab 4: Load fitness dataset
-- Lab 5: Web deployment (Resource Manager)
-- Lab 6: Explore benchmarking
+- Lab 3: Provisioning
+- Lab 4: Performance on InnoDB
+- Lab 5: Enable Heatwave (Rapids)
+- Lab 6: Heatwave Analytics
 - Lab 7: Heatwave ML
 - Lab 8: Clean up
 
@@ -38,13 +38,6 @@ Website Mock-up:
 - Terraform
 - OCI CLI
 
-## TODO
-
-- Deploy HeatWave
-- Run Query with Heatwave
-- HeatWave on/off
-
-
 ## Set Up
 
 Clone this repository in OCI Cloud Shell:
@@ -60,18 +53,6 @@ cd mysql-heatwave-health
 Export an environment variable with the base directory:
 ```
 export BASE_DIR=$(pwd)
-```
-
-## Build 
-
-Change directory to the ``:
-```
-cd $BASE_DIR/src/web
-```
-
-Run the web build:
-```
-npm run build
 ```
 
 ## Deployment
@@ -91,42 +72,58 @@ Edit the variables values with vim or your favorite editor:
 vim terraform.tfvars
 ```
 
-Initialize the terraform provider:
+Go back to the base directory:
 ```
-terraform init
-```
-
-Apply the infrastructure, based on the plan from the previous step:
-```
-terraform apply -auto-approve
+cd $BASE_DIR
 ```
 
-Print MySQL password:
+Start the provisioning and deployment:
 ```
-terraform output mysql_admin_password
-```
-
-Install MySQL Shell and dataset CSV files on the client:
-```
-ansible-playbook -i ./generated/client.ini ../ansible/client.yaml
+./start.sh
 ```
 
 ## Explore with Mysql Shell
 
+SSH into the compute, change `PUBLIC_IP` for the public IP address:
+```
+ssh opc@PUBLIC_IP
+```
+
+> NOTE: 
+> If you are using a non-standard private key path (`~/.ssh/id_rsa`) 
+> then add `-i PATH/TO/PRIVATE/KEY`.
+
 ```
 mysqlsh \
   --mx \
-  --user=`cat mysql_user.txt` \
-  --host=`cat mysql_host.txt` \
-  --password=`cat mysql_password.txt` \
+  --user=`USER` \
+  --host=`HOST` \
+  --password=`PASSWORD` \
   --schema=fitbit
 ```
 
+> Connection details like `USER`, `HOST` or `PASSWORD` are 
+> at the end of the output on the execution of `start.sh`.
+
+You can exit at any point from MySQL Shell with:
 ```
 \q
 ```
 
-## Benchmark HeatWave
+## Website
+
+Paste the Public IP address from the end of the script on your browser.
+
+![Website](images/website.png)
+
+## Clean Up
+
+Run the script:
+```
+./stop.sh
+```
+
+## Notes on HeatWave
 
 The tables you intend to load must be InnoDB tables. You can manually convert tables to InnoDB using the following ALTER TABLE statement:
 
@@ -211,10 +208,4 @@ SET SESSION use_secondary_engine=OFF;
 Unload the table from HeatWave:
 ```
 ALTER TABLE orders SECONDARY_UNLOAD;
-```
-## Clean Up
-
-Destroy all the infrastructure:
-```
-terraform destroy -auto-approve
 ```
