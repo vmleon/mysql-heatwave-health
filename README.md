@@ -209,3 +209,22 @@ Unload the table from HeatWave:
 ```
 ALTER TABLE orders SECONDARY_UNLOAD;
 ```
+
+Some other interesting commands:
+```
+CALL sys.heatwave_load(JSON_ARRAY('database'), NULL);
+```
+
+```
+SELECT @@use_secondary_engine;
+```
+
+```
+USE performance_schema;
+SELECT NAME, LOAD_STATUS FROM rpd_tables,rpd_table_id WHERE
+rpd_tables.ID = rpd_table_id.ID;
+```
+
+```
+SET @@use_secondary_engine=OFF;
+```
