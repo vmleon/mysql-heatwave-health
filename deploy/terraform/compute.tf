@@ -19,17 +19,26 @@ variable "num_instances_backend" {
 }
 
 data "oci_core_images" "ol8_images" {
-    compartment_id = var.compartment_ocid
-    shape = var.instance_shape
-    operating_system = "Oracle Linux"
-    operating_system_version = "8"
-    sort_by = "TIMECREATED"
-    sort_order = "DESC"
+  compartment_id           = var.compartment_ocid
+  shape                    = var.instance_shape
+  operating_system         = "Oracle Linux"
+  operating_system_version = "8"
+  sort_by                  = "TIMECREATED"
+  sort_order               = "DESC"
 }
 
 data "oci_identity_availability_domain" "ad" {
   compartment_id = var.tenancy_ocid
   ad_number      = 1
+}
+
+resource "random_string" "secure_token" {
+  length      = 32
+  special     = true
+  min_lower   = 4
+  min_numeric = 4
+  min_special = 4
+  min_upper   = 4
 }
 
 resource "oci_core_instance" "client" {

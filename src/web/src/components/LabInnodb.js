@@ -1,22 +1,20 @@
 import React, {useState} from 'react';
-import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Slider from '@mui/material/Slider';
-import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
-import Chart from '../components/Chart';
+import SendIcon from '@mui/icons-material/Send';
 
-function Dashboard() {
+function Lab0({setDataInnodb}) {
   const [query, setQuery] = useState(
     'SELECT count(*) FROM heartrate_seconds a join daily_activities b on a.id=b.id where a.value>80;',
   );
   const [loading, setLoading] = useState(false);
   const [number, setNumber] = useState(5);
   const [limit, setLimit] = useState(10000);
-  const [data, setData] = useState([]);
   const [error, setError] = useState('');
 
   const sendQuery = async () => {
@@ -28,19 +26,20 @@ function Dashboard() {
         body: JSON.stringify({query: query, number: number, limit: limit}),
         headers: {
           'Content-Type': 'application/json',
+          Authorization: localStorage.getItem('token'),
         },
       });
       const results = await body.json();
       if (results.error) {
-        setData([]);
+        setDataInnodb([]);
         setError(results.message);
       } else {
-        setData(results);
+        setDataInnodb(results);
         setError('');
       }
     } catch (error) {
       setError(`Error running query: ${error.message}`);
-      setData([]);
+      setDataInnodb([]);
     } finally {
       setLoading(false);
     }
@@ -118,9 +117,8 @@ function Dashboard() {
           Send
         </LoadingButton>
       </Stack>
-      <Chart innodbData={data} rapidData={[]} />
     </Container>
   );
 }
 
-export default Dashboard;
+export default Lab0;

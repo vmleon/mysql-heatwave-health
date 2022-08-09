@@ -1,4 +1,5 @@
 import React from 'react';
+// import {io} from 'socket.io-client';
 import Box from '@mui/material/Box';
 import {max, min} from 'd3-array';
 import {curveLinear} from '@visx/curve';
@@ -10,6 +11,8 @@ import {LegendOrdinal} from '@visx/legend';
 import {scaleLinear, scaleOrdinal} from '@visx/scale';
 import {MarkerCircle, MarkerLine} from '@visx/marker';
 import {lightBlue, red} from '@mui/material/colors';
+
+// const socket = io();
 
 const getPoint = (d) => d.number;
 const getResponseTime = (d) => d.responseTime;
@@ -26,11 +29,61 @@ const colorScale = scaleOrdinal({
   range: [innodbColor, rapidsColor],
 });
 
-function Chart({innodbData, rapidData, width = 500, height = 400}) {
-  if (innodbData.length === 0 && rapidData.length === 0) {
+function InnoDBGraph({children: data, pointScale, responseTimeScale}) {
+  if (data.length === 0) {
     return null;
   }
+  return (
+    <Group left={14}>
+      {data.map((d, idx) => (
+        <circle
+          key={idx}
+          r={5}
+          cx={pointScale(getPoint(d))}
+          cy={responseTimeScale(getResponseTime(d))}
+        />
+      ))}
+      <LinePath
+        curve={curveLinear}
+        data={data}
+        x={(d) => pointScale(getPoint(d))}
+        y={(d) => responseTimeScale(getResponseTime(d))}
+        stroke={innodbColor}
+        strokeWidth={2}
+        markerMid="url(#marker-circle)"
+      />
+    </Group>
+  );
+}
 
+function RapidsGraph({children: data, pointScale, responseTimeScale}) {
+  if (data.length === 0) {
+    return null;
+  }
+  return (
+    <Group left={13}>
+      {data.map((d, idx) => (
+        <circle
+          key={idx}
+          r={5}
+          cx={pointScale(getPoint(d))}
+          cy={responseTimeScale(getResponseTime(d))}
+        />
+      ))}
+      <LinePath
+        curve={curveLinear}
+        data={data}
+        x={(d) => pointScale(getPoint(d))}
+        y={(d) => responseTimeScale(getResponseTime(d))}
+        stroke={rapidsColor}
+        strokeWidth={2}
+        markerMid="url(#marker-circle)"
+      />
+    </Group>
+  );
+}
+
+function Chart({innodbData = [], rapidData = [], width = 500, height = 400}) {
   const maxPoint = max(innodbData.map(getPoint));
   const maxResponseTime = max(innodbData.map(getResponseTime));
   const minResponseTime = min(innodbData.map(getResponseTime));
@@ -54,52 +107,20 @@ function Chart({innodbData, rapidData, width = 500, height = 400}) {
         <rect width={width} height={height} fill="#efefef" rx={roundCorner} ry={roundCorner} />
         <GridRows scale={responseTimeScale} width={width} height={height} stroke={lightBlue[100]} />
         <GridColumns scale={pointScale} width={width} height={height} stroke={lightBlue[100]} />
-        <Group left={14}>
-          {innodbData.map((d, idx) => (
-            <circle
-              key={idx}
-              r={5}
-              cx={pointScale(getPoint(d))}
-              cy={responseTimeScale(getResponseTime(d))}
-            />
-          ))}
-          <LinePath
-            curve={curveLinear}
-            data={innodbData}
-            x={(d) => pointScale(getPoint(d))}
-            y={(d) => responseTimeScale(getResponseTime(d))}
-            stroke={innodbColor}
-            strokeWidth={2}
-            markerMid="url(#marker-circle)"
-          />
-          <text x="-130" y={innerMargin + 10} transform="rotate(-90)" fontSize={10}>
-            Response Time (ms)
-          </text>
-          <text x={width - margin - innerMargin - 10} y={height - 10} fontSize={10}>
-            Test #
-          </text>
-          <AxisBottom top={width - margin - innerMargin - 100} scale={pointScale} numTicks={5} />
-          <AxisLeft left={innerMargin} scale={responseTimeScale} numTicks={10} />
-        </Group>
-        <Group left={13}>
-          {rapidData.map((d, idx) => (
-            <circle
-              key={idx}
-              r={5}
-              cx={pointScale(getPoint(d))}
-              cy={responseTimeScale(getResponseTime(d))}
-            />
-          ))}
-          <LinePath
-            curve={curveLinear}
-            data={rapidData}
-            x={(d) => pointScale(getPoint(d))}
-            y={(d) => responseTimeScale(getResponseTime(d))}
-            stroke={rapidsColor}
-            strokeWidth={2}
-            markerMid="url(#marker-circle)"
-          />
-        </Group>
+        <InnoDBGraph pointScale={pointScale} responseTimeScale={responseTimeScale}>
+          {innodbData}
+        </InnoDBGraph>
+        <RapidsGraph pointScale={pointScale} responseTimeScale={responseTimeScale}>
+          {rapidData}
+        </RapidsGraph>
+        <text x="-130" y={innerMargin + 10} transform="rotate(-90)" fontSize={10}>
+          Response Time (ms)
+        </text>
+        <text x={width - margin - innerMargin - 10} y={height - 10} fontSize={10}>
+          Test #
+        </text>
+        <AxisBottom top={width - margin - innerMargin - 100} scale={pointScale} numTicks={5} />
+        <AxisLeft left={innerMargin} scale={responseTimeScale} numTicks={10} />
       </svg>
     </Box>
   );

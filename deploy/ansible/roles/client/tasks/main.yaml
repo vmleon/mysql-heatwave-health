@@ -51,6 +51,7 @@
   with_items:
   - "index.js"
   - "db.js"
+  - "auth.js"
   - "package.json"
   - "package-lock.json"
 - name: Copy schema.sql and load.js script

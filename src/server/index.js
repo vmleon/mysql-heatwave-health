@@ -7,6 +7,7 @@ const {Parser} = require('node-sql-parser/build/mysql');
 const compression = require('compression');
 const {createTerminus} = require('@godaddy/terminus');
 const db = require('./db');
+const auth = require('./auth');
 
 const {PORT, LOG_LEVEL} = process.env;
 const logger = pino({level: LOG_LEVEL});
@@ -32,7 +33,11 @@ app.get('/api/v1/', async (req, res, next) => {
   }
 });
 
-app.post('/api/v1/perf', async (req, res, next) => {
+app.get('/api/v1/login', auth, async (req, res, next) => {
+  res.json({status: 'ok'});
+});
+
+app.post('/api/v1/perf', auth, async (req, res, next) => {
   const query = req.body.query;
   const number = req.body.number || 5;
   const limit = req.body.limit || 1000;
@@ -82,6 +87,11 @@ function validQuery(query) {
 }
 
 const server = http.createServer(app);
+// const io = require('socket.io')(server);
+
+// io.on('connection', () => {
+//   console.log('Connection...');
+// });
 
 function onSignal() {
   logger.info('server is starting cleanup');
