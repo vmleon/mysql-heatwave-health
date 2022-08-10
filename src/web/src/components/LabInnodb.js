@@ -8,10 +8,15 @@ import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
 import SendIcon from '@mui/icons-material/Send';
 
+const defaultQuery = `SELECT count(*) 
+  FROM heartrate_seconds a 
+    join daily_activities b on a.id = b.id 
+    join sleep_day c on c.id = b.id 
+  where a.value > 80 and b.total_distance > 7.0 
+    and c.total_minutes_asleep > 350;`;
+
 function Lab0({setDataInnodb}) {
-  const [query, setQuery] = useState(
-    'SELECT count(*) FROM heartrate_seconds a join daily_activities b on a.id=b.id where a.value>80;',
-  );
+  const [query, setQuery] = useState(defaultQuery);
   const [loading, setLoading] = useState(false);
   const [number, setNumber] = useState(5);
   const [limit, setLimit] = useState(10000);
