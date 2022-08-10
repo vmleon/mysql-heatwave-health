@@ -117,7 +117,7 @@ function Lab0({setDataInnodb}) {
           variant="contained"
           loading={loading}
           endIcon={<SendIcon />}
-          onClick={sendQuery}
+          onClick={() => sendQuery()}
         >
           Send
         </LoadingButton>

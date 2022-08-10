@@ -53,6 +53,21 @@ app.post('/api/v1/perf', auth, async (req, res, next) => {
   }
 });
 
+app.post('/api/v1/rapid', auth, async (req, res, next) => {
+  const operation = req.body.operation;
+  // if (!validQuery(query)) {
+  //   res.status(400).json({status: 400, message: 'Invalid query'});
+  // }
+  try {
+    const result = await enableHeatwave();
+    logger.info(result);
+    res.json(result);
+  } catch (error) {
+    logger.error(`Error while getting heatwave enabled: ${error.message}`);
+    res.status(400).json({error: true, message: error.message});
+  }
+});
+
 async function run(query, num, limit) {
   const ast = sqlParser.astify(query, sqlParserOpts);
   ast[0].limit = {
@@ -74,6 +89,22 @@ async function run(query, num, limit) {
     connection.close();
   }
   return vector;
+}
+
+async function enableHeatwave() {
+  const connection = await db.getConnection();
+  try {
+    const result = await db.query(
+      connection,
+      "CALL sys.heatwave_load(JSON_ARRAY('fitbit'), NULL);",
+    );
+    return result;
+  } catch (error) {
+    logger.error(`Error while getting heatwave enabled: ${error.message}`);
+    throw new Error(error.message);
+  } finally {
+    connection.close();
+  }
 }
 
 function validQuery(query) {
