@@ -38,3 +38,16 @@ CREATE TABLE sleep_day (
   total_minutes_asleep INT,
   total_time_inbed INT
 );
+--
+-- weightLogInfo_merged
+DROP TABLE IF EXISTS weight;
+CREATE TABLE weight (
+  id VARCHAR(20),
+  date DATETIME,
+  weight_kg DECIMAL(9, 3),
+  weight_pound DECIMAL(9, 3),
+  fat INT,
+  bmi DECIMAL(9, 3),
+  manual_report BOOLEAN,
+  log_id VARCHAR(20)
+);

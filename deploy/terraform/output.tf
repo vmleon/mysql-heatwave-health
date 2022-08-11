@@ -17,9 +17,15 @@ output "mysql_admin_password" {
 }
 
 output "client" {
-  value = oci_core_instance.client[0].public_ip
+  value = "http://${oci_core_instance.client[0].public_ip}"
+}
+
+
+output "ssh" {
+  value = "ssh opc@${oci_core_instance.client[0].public_ip}"
 }
 
 output "secure_token" {
-  value = random_string.secure_token.result
+  value     = random_string.secure_token.result
+  sensitive = true
 }

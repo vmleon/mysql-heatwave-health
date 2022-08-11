@@ -73,3 +73,23 @@ util.importTable(csv_path + '/sleepDay_merged.csv', {
   skipRows: 1,
   showProgress: true,
 });
+
+// weightLogInfo_merged
+util.importTable('/home/opc/fitbit/weightLogInfo_merged.csv', {
+  schema: 'fitbit',
+  table: 'weight',
+  columns: [1, 2, 3, 4, 5, 6, 7, 8],
+  decodeColumns: {
+    id: '@1',
+    date: 'STR_TO_DATE(@2,"%m/%d/%Y %h:%i:%s %p")',
+    weight_kg: 'ROUND(@3,3)',
+    weight_pound: 'ROUND(@4,3)',
+    fat: '@5 OR 0',
+    bmi: 'ROUND(@6,3)',
+    manual_report: '@7= "TRUE"',
+    log_id: '@8',
+  },
+  dialect: 'csv-unix',
+  skipRows: 1,
+  showProgress: true,
+});
